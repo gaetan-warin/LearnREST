@@ -1,0 +1,24 @@
+{
+    "1743253851.310435": {
+        "mode": "beginner",
+        "completed_methods": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE"
+        ],
+        "current_level": 0
+    },
+    "1743257763.256572": {
+        "mode": "advanced",
+        "completed_methods": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE"
+        ],
+        "current_level": 0
+    }
+}

@@ -2,15 +2,15 @@
     "books": [
         {
             "id": 1,
-            "title": "Understanding REST APIs",
-            "author": "John Developer",
-            "year": 2023,
+            "title": "REST API Fundamentals",
+            "author": "Professor REST",
+            "year": 2024,
             "available": true
         },
         {
             "id": 2,
             "title": "HTTP Methods Explained",
-            "author": "Jane Coder",
+            "author": "API Master",
             "year": 2024,
             "available": true
         }

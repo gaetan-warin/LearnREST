@@ -7,7 +7,8 @@
     <title>REST Quest - Learn REST APIs Through Adventure!</title>
     <link rel="stylesheet" href="styles/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Import Vue before our app -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 </head>
 
 <body>
@@ -15,14 +16,14 @@
         <div class="game-container">
             <header class="game-header">
                 <h1>REST Quest</h1>
-                <div class="progress-bar">
+                <div class="progress-bar" v-if="gameStarted">
                     <div class="progress" :style="{ width: progressWidth + '%' }"></div>
                 </div>
             </header>
 
             <main class="game-content">
-                <!-- Welcome Level -->
-                <div v-if="currentLevel === 0" class="level">
+                <!-- Mode Selection Level -->
+                <div v-if="!gameStarted" class="level">
                     <h2>Welcome to REST Quest!</h2>
                     <div class="character-dialog">
                         <div class="character">
@@ -30,16 +31,44 @@
                         </div>
                         <div class="dialog-box">
                             <p>Greetings, brave explorer! I'm Professor REST, the head librarian of the Magical Library
-                                of APIs. Our library is special - it responds to your requests through HTTP methods!</p>
-                            <p>Today, I'll teach you how to interact with our mystical collection using the five sacred
-                                HTTP methods. Are you ready to begin?</p>
+                                of APIs.</p>
+                            <p>Before we begin, please choose your learning path:</p>
                         </div>
                     </div>
-                    <button class="action-button" @click="startJourney">Begin Adventure!</button>
+
+                    <div class="mode-selection">
+                        <div class="mode-card" :class="{ active: selectedMode === 'beginner' }"
+                            @click="selectMode('beginner')">
+                            <h3>Beginner Mode</h3>
+                            <div class="mode-icon">🎯</div>
+                            <p>Interactive UI with guided examples</p>
+                            <ul>
+                                <li>User-friendly interface</li>
+                                <li>Step-by-step guidance</li>
+                                <li>Instant visual feedback</li>
+                            </ul>
+                        </div>
+
+                        <div class="mode-card" :class="{ active: selectedMode === 'advanced' }"
+                            @click="selectMode('advanced')">
+                            <h3>Advanced Mode</h3>
+                            <div class="mode-icon">🚀</div>
+                            <p>External API calls with code examples</p>
+                            <ul>
+                                <li>Real API integration</li>
+                                <li>Multiple language examples</li>
+                                <li>Tool-based learning</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <button class="action-button" @click="startJourney" :disabled="!selectedMode">
+                        Begin {{ selectedMode === 'beginner' ? 'Interactive' : 'Advanced' }} Journey!
+                    </button>
                 </div>
 
-                <!-- GET Level -->
-                <div v-if="currentLevel === 1" class="level">
+                <!-- GET All Level -->
+                <div v-if="gameStarted && currentLevel === 1" class="level">
                     <h2>The GET Method - Finding Treasures</h2>
                     <div class="character-dialog">
                         <div class="character">
@@ -57,7 +86,8 @@
                             <p>Let's try viewing our collection!</p>
                         </div>
                     </div>
-                    <div class="interactive-demo">
+
+                    <div v-if="selectedMode === 'beginner'" class="interactive-demo">
                         <button class="action-button" @click="handleGetAllBooks">GET /api/books</button>
                         <p class="demo-explanation">This spell reveals all books in our collection</p>
                         <div class="response-box">
@@ -68,10 +98,67 @@
                             </div>
                         </div>
                     </div>
+
+                    <div v-else class="code-examples">
+                        <div class="tabs">
+                            <button v-for="tool in ['python', 'javascript', 'postman']" :key="tool"
+                                :class="{ active: activeTab === tool }" @click="activeTab = tool">
+                                {{ tool.charAt(0).toUpperCase() + tool.slice(1) }}
+                            </button>
+                        </div>
+                        <div class="example-content">
+                            <pre><code>{{ examples[activeTab].get }}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GET ID Level -->
+                <div v-if="gameStarted && currentLevel === 2" class="level">
+                    <h2>The GET Method - Finding a Specific Treasure</h2>
+                    <div class="character-dialog">
+                        <div class="character">
+                            <div class="character-avatar">🧙‍♂️</div>
+                        </div>
+                        <div class="dialog-box">
+                            <p>Now let's try finding a specific book using its ID. This is like using a magical locator
+                                spell:</p>
+                            <ul>
+                                <li>It's <strong>read-only</strong> - you can't change the book by looking at it</li>
+                            </ul>
+                            <p>Enter the ID of the book you want to find!</p>
+                        </div>
+                    </div>
+
+                    <div v-if="selectedMode === 'beginner'" class="interactive-demo">
+                        <div class="method-card get">
+                            <h3>GET a Specific Book</h3>
+                            <input type="number" v-model="getBookId" placeholder="Enter book ID">
+                            <button @click="handleGetBook">GET /api/books/{id}</button>
+                        </div>
+                        <div class="response-box">
+                            <div v-if="apiResponse"
+                                :class="['api-response', apiResponse.success ? 'success' : 'error']">
+                                <p class="status">Status: {{ apiResponse.status }}</p>
+                                <pre>{{ apiResponse.data }}</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-else class="code-examples">
+                        <div class="tabs">
+                            <button v-for="tool in ['python', 'javascript', 'postman']" :key="tool"
+                                :class="{ active: activeTab === tool }" @click="activeTab = tool">
+                                {{ tool.charAt(0).toUpperCase() + tool.slice(1) }}
+                            </button>
+                        </div>
+                        <div class="example-content">
+                            <pre><code>{{ examples[activeTab].get }}</code></pre>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- POST Level -->
-                <div v-if="currentLevel === 2" class="level">
+                <div v-if="gameStarted && currentLevel === 3" class="level">
                     <h2>The POST Method - Creating New Treasures</h2>
                     <div class="character-dialog">
                         <div class="character">
@@ -89,24 +176,30 @@
                             <p>Try adding a new book to our collection!</p>
                         </div>
                     </div>
-                    <div class="method-card post">
+
+                    <div v-if="selectedMode === 'beginner'" class="method-card post">
                         <h3>Create a New Book</h3>
                         <input type="text" v-model="newBook.title" placeholder="Book title (required)">
                         <input type="text" v-model="newBook.author" placeholder="Author (required)">
                         <input type="number" v-model="newBook.year" placeholder="Year (required)">
                         <button @click="handleCreateBook">POST /api/books</button>
                     </div>
-                    <div class="response-box">
-                        <div v-if="methodResponse"
-                            :class="['api-response', methodResponse.success ? 'success' : 'error']">
-                            <p class="status">Status: {{ methodResponse.status }}</p>
-                            <pre>{{ methodResponse.data }}</pre>
+
+                    <div v-else class="code-examples">
+                        <div class="tabs">
+                            <button v-for="tool in ['python', 'javascript', 'postman']" :key="tool"
+                                :class="{ active: activeTab === tool }" @click="activeTab = tool">
+                                {{ tool.charAt(0).toUpperCase() + tool.slice(1) }}
+                            </button>
+                        </div>
+                        <div class="example-content">
+                            <pre><code>{{ examples[activeTab].post }}</code></pre>
                         </div>
                     </div>
                 </div>
 
                 <!-- PUT Level -->
-                <div v-if="currentLevel === 3" class="level">
+                <div v-if="gameStarted && currentLevel === 4" class="level">
                     <h2>The PUT Method - Complete Transformations</h2>
                     <div class="character-dialog">
                         <div class="character">
@@ -124,7 +217,8 @@
                             <p>Unlike POST, you can choose which fields to keep or remove!</p>
                         </div>
                     </div>
-                    <div class="method-card put">
+
+                    <div v-if="selectedMode === 'beginner'" class="method-card put">
                         <h3>Replace Existing Book</h3>
                         <input type="number" v-model="updateBook.id" placeholder="Book ID (required)">
                         <input type="text" v-model="updateBook.title" placeholder="New title (required)">
@@ -134,17 +228,22 @@
                             placeholder="New year (optional, empty to remove)">
                         <button @click="handleUpdateBook">PUT /api/books/{id}</button>
                     </div>
-                    <div class="response-box">
-                        <div v-if="methodResponse"
-                            :class="['api-response', methodResponse.success ? 'success' : 'error']">
-                            <p class="status">Status: {{ methodResponse.status }}</p>
-                            <pre>{{ methodResponse.data }}</pre>
+
+                    <div v-else class="code-examples">
+                        <div class="tabs">
+                            <button v-for="tool in ['python', 'javascript', 'postman']" :key="tool"
+                                :class="{ active: activeTab === tool }" @click="activeTab = tool">
+                                {{ tool.charAt(0).toUpperCase() + tool.slice(1) }}
+                            </button>
+                        </div>
+                        <div class="example-content">
+                            <pre><code>{{ examples[activeTab].put }}</code></pre>
                         </div>
                     </div>
                 </div>
 
                 <!-- PATCH Level -->
-                <div v-if="currentLevel === 4" class="level">
+                <div v-if="gameStarted && currentLevel === 5" class="level">
                     <h2>The PATCH Method - Partial Updates</h2>
                     <div class="character-dialog">
                         <div class="character">
@@ -162,27 +261,31 @@
                             <p>Let's try updating just the parts we want to change!</p>
                         </div>
                     </div>
-                    <div class="method-card patch">
+
+                    <div v-if="selectedMode === 'beginner'" class="method-card patch">
                         <h3>Update Book Fields</h3>
                         <input type="number" v-model="patchBook.id" placeholder="Book ID (required)">
                         <input type="text" v-model="patchBook.title" placeholder="New title (optional)">
                         <input type="text" v-model="patchBook.author" placeholder="New author (optional)">
                         <input type="number" v-model="patchBook.year" placeholder="New year (optional)">
-                        <p class="field-note">Fill in only the fields you want to update - others will stay unchanged!
-                        </p>
                         <button @click="handlePatchBook">PATCH /api/books/{id}</button>
                     </div>
-                    <div class="response-box">
-                        <div v-if="methodResponse"
-                            :class="['api-response', methodResponse.success ? 'success' : 'error']">
-                            <p class="status">Status: {{ methodResponse.status }}</p>
-                            <pre>{{ methodResponse.data }}</pre>
+
+                    <div v-else class="code-examples">
+                        <div class="tabs">
+                            <button v-for="tool in ['python', 'javascript', 'postman']" :key="tool"
+                                :class="{ active: activeTab === tool }" @click="activeTab = tool">
+                                {{ tool.charAt(0).toUpperCase() + tool.slice(1) }}
+                            </button>
+                        </div>
+                        <div class="example-content">
+                            <pre><code>{{ examples[activeTab].patch }}</code></pre>
                         </div>
                     </div>
                 </div>
 
                 <!-- DELETE Level -->
-                <div v-if="currentLevel === 5" class="level">
+                <div v-if="gameStarted && currentLevel === 6" class="level">
                     <h2>The DELETE Method - Removing Resources</h2>
                     <div class="character-dialog">
                         <div class="character">
@@ -197,26 +300,211 @@
                                 </li>
                                 <li>The ID cannot be reused for new books</li>
                             </ul>
-                            <p>Careful with this one - it's permanent!</p>
                         </div>
                     </div>
-                    <div class="method-card delete">
+
+                    <div v-if="selectedMode === 'beginner'" class="method-card delete">
                         <h3>Remove a Book</h3>
                         <input type="number" v-model="deleteBookId" placeholder="Book ID">
                         <button @click="handleDeleteBook">DELETE /api/books/{id}</button>
                     </div>
-                    <div class="response-box">
-                        <div v-if="methodResponse"
-                            :class="['api-response', methodResponse.success ? 'success' : 'error']">
-                            <p class="status">Status: {{ methodResponse.status }}</p>
-                            <pre>{{ methodResponse.data }}</pre>
+
+                    <div v-else class="code-examples">
+                        <div class="tabs">
+                            <button v-for="tool in ['python', 'javascript', 'postman']" :key="tool"
+                                :class="{ active: activeTab === tool }" @click="activeTab = tool">
+                                {{ tool.charAt(0).toUpperCase() + tool.slice(1) }}
+                            </button>
+                        </div>
+                        <div class="example-content">
+                            <pre><code>{{ examples[activeTab].delete }}</code></pre>
                         </div>
                     </div>
                 </div>
+
+                <!-- Resume/Documentation Level -->
+                <div v-if="gameStarted && currentLevel === 7" class="level documentation">
+                    <h2>API Documentation</h2>
+                    <div class="documentation-intro">
+                        <p>Congratulations on completing the REST Quest! Here's a complete reference of our Library API:
+                        </p>
+                        <a href="https://swagger.io/docs/" target="_blank" class="swagger-link">
+                            Learn more about API documentation with Swagger →
+                        </a>
+                    </div>
+
+                    <!-- GET Documentation -->
+                    <div class="api-doc-section">
+                        <div class="method-header get">
+                            <span class="method-label">GET</span>
+                            <span class="endpoint">/api/books</span>
+                        </div>
+                        <div class="method-content">
+                            <h3>Retrieve all books</h3>
+                            <p>Returns an array of all books in the library.</p>
+
+                            <div class="doc-subsection">
+                                <h4>Response</h4>
+                                <pre class="response-schema">
+{
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "id": { "type": "integer" },
+            "title": { "type": "string" },
+            "author": { "type": "string" },
+            "year": { "type": "integer" },
+            "available": { "type": "boolean" }
+        }
+    }
+}</pre>
+                            </div>
+                        </div>
+
+                        <div class="method-header get">
+                            <span class="method-label">GET</span>
+                            <span class="endpoint">/api/books/{id}</span>
+                        </div>
+                        <div class="method-content">
+                            <h3>Retrieve a specific book</h3>
+                            <p>Returns details of a specific book by ID.</p>
+
+                            <div class="doc-subsection">
+                                <h4>Parameters</h4>
+                                <table class="params-table">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                    </tr>
+                                    <tr>
+                                        <td>id</td>
+                                        <td>integer</td>
+                                        <td>Book's unique identifier</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- POST Documentation -->
+                    <div class="api-doc-section">
+                        <div class="method-header post">
+                            <span class="method-label">POST</span>
+                            <span class="endpoint">/api/books</span>
+                        </div>
+                        <div class="method-content">
+                            <h3>Create a new book</h3>
+                            <p>Adds a new book to the library.</p>
+
+                            <div class="doc-subsection">
+                                <h4>Request Body</h4>
+                                <pre class="request-schema">
+{
+    "title": "string (required)",
+    "author": "string (required)",
+    "year": "integer (required)"
+}</pre>
+                            </div>
+                        </div>
+
+                        <!-- PUT Documentation -->
+                        <div class="api-doc-section">
+                            <div class="method-header put">
+                                <span class="method-label">PUT</span>
+                                <span class="endpoint">/api/books/{id}</span>
+                            </div>
+                            <div class="method-content">
+                                <h3>Replace a book</h3>
+                                <p>Completely replaces a book's information.</p>
+
+                                <div class="doc-subsection">
+                                    <h4>Parameters</h4>
+                                    <table class="params-table">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                        <tr>
+                                            <td>id</td>
+                                            <td>integer</td>
+                                            <td>Book's unique identifier</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <div class="doc-subsection">
+                                    <h4>Request Body</h4>
+                                    <pre class="request-schema">
+{
+    "title": "string (required)",
+    "author": "string (optional)",
+    "year": "integer (optional)"
+}</pre>
+                                </div>
+                            </div>
+
+                            <!-- PATCH Documentation -->
+                            <div class="api-doc-section">
+                                <div class="method-header patch">
+                                    <span class="method-label">PATCH</span>
+                                    <span class="endpoint">/api/books/{id}</span>
+                                </div>
+                                <div class="method-content">
+                                    <h3>Update a book</h3>
+                                    <p>Partially updates a book's information.</p>
+
+                                    <div class="doc-subsection">
+                                        <h4>Request Body</h4>
+                                        <pre class="request-schema">
+{
+    "title": "string (optional)",
+    "author": "string (optional)",
+    "year": "integer (optional)"
+}</pre>
+                                        <p class="note">At least one field must be provided.</p>
+                                    </div>
+                                </div>
+
+                                <!-- DELETE Documentation -->
+                                <div class="api-doc-section">
+                                    <div class="method-header delete">
+                                        <span class="method-label">DELETE</span>
+                                        <span class="endpoint">/api/books/{id}</span>
+                                    </div>
+                                    <div class="method-content">
+                                        <h3>Remove a book</h3>
+                                        <p>Deletes a book from the library.</p>
+
+                                        <div class="doc-subsection">
+                                            <h4>Parameters</h4>
+                                            <table class="params-table">
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Type</th>
+                                                    <th>Description</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>id</td>
+                                                    <td>integer</td>
+                                                    <td>Book's unique identifier</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <div class="doc-subsection">
+                                            <h4>Response</h4>
+                                            <p>Returns no content (204) on success.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
             </main>
 
             <!-- Current Library State -->
-            <div class="library-state" v-if="currentLevel > 0">
+            <div class="library-state" v-if="gameStarted && currentLevel < 7">
                 <h3>Current Library State</h3>
                 <div class="books-table" v-if="books.length > 0">
                     <table>
@@ -245,14 +533,24 @@
                 </div>
             </div>
 
+            <!-- Response Box -->
+            <div v-if="gameStarted && selectedMode === 'beginner' && methodResponse" class="response-box">
+                <div :class="['api-response', methodResponse.success ? 'success' : 'error']">
+                    <p class="status">Status: {{ methodResponse.status }}</p>
+                    <pre>{{ methodResponse.data }}</pre>
+                </div>
+            </div>
+
             <footer class="game-footer">
-                <div class="controls">
-                    <button class="nav-button" :disabled="currentLevel === 0" @click="previousLevel">Previous</button>
+                <div class="controls" v-if="gameStarted">
+                    <button class="nav-button" :disabled="currentLevel === 1" @click="previousLevel">Previous</button>
                     <button class="nav-button" :disabled="!canAdvance" @click="nextLevel">Next</button>
                 </div>
             </footer>
         </div>
     </div>
+    <!-- Import our scripts after Vue -->
+    <script type="module" src="js/examples.js"></script>
     <script type="module" src="js/app.js"></script>
 </body>
 

@@ -1,13 +1,16 @@
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, session
 from flask_cors import CORS
 import json
 import os
+from datetime import datetime
 
 app = Flask(__name__, static_url_path='')
-CORS(app)  # Enable CORS for all routes
+app.secret_key = 'your-secret-key-here'  # Required for session management
+CORS(app)
 
 # Path to our data file
 DATA_FILE = 'data/data.json'
+PROGRESS_FILE = 'data/progress.json'
 
 def read_data():
     if os.path.exists(DATA_FILE):
@@ -19,6 +22,44 @@ def write_data(data):
     os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
     with open(DATA_FILE, 'w') as f:
         json.dump(data, f, indent=4)
+
+def read_progress():
+    if os.path.exists(PROGRESS_FILE):
+        with open(PROGRESS_FILE, 'r') as f:
+            return json.load(f)
+    return {}
+
+def write_progress(data):
+    os.makedirs(os.path.dirname(PROGRESS_FILE), exist_ok=True)
+    with open(PROGRESS_FILE, 'w') as f:
+        json.dump(data, f, indent=4)
+
+def get_user_id():
+    if 'user_id' not in session:
+        session['user_id'] = str(datetime.now().timestamp())
+    return session['user_id']
+
+def is_ui_request():
+    return 'XMLHttpRequest' in request.headers.get('X-Requested-With', '')
+
+def update_progress(method):
+    if is_ui_request():
+        user_id = get_user_id()
+        progress = read_progress()
+
+        if user_id not in progress:
+            progress[user_id] = {
+                'mode': 'beginner',
+                'completed_methods': [],
+                'current_level': 0
+            }
+
+        if method not in progress[user_id]['completed_methods']:
+            progress[user_id]['completed_methods'].append(method)
+            write_progress(progress)
+
+        return progress[user_id]
+    return None
 
 # Static file routes
 @app.route('/')
@@ -37,18 +78,59 @@ def send_css(path):
 def send_data(path):
     return send_from_directory('data', path)
 
+# Game management routes
+@app.route('/api/mode', methods=['POST'])
+def set_mode():
+    data = request.get_json()
+    mode = data.get('mode', 'beginner')
+    user_id = get_user_id()
+
+    progress = read_progress()
+    if user_id not in progress:
+        progress[user_id] = {
+            'mode': mode,
+            'completed_methods': [],
+            'current_level': 0
+        }
+    else:
+        progress[user_id]['mode'] = mode
+
+    write_progress(progress)
+    return jsonify(progress[user_id])
+
+@app.route('/api/progress')
+def get_progress():
+    user_id = get_user_id()
+    progress = read_progress()
+    return jsonify(progress.get(user_id, {
+        'mode': 'beginner',
+        'completed_methods': [],
+        'current_level': 0
+    }))
+
 # API Routes
 @app.route('/api/books', methods=['GET'])
 def get_books():
     data = read_data()
-    return jsonify(data['books'])
+    progress = update_progress('GET')
+    response = jsonify(data['books'])
+
+    if progress:
+        response.headers['X-Progress'] = json.dumps(progress)
+
+    return response
 
 @app.route('/api/books/<int:book_id>', methods=['GET'])
 def get_book(book_id):
     data = read_data()
     book = next((b for b in data['books'] if b['id'] == book_id), None)
+    progress = update_progress('GET')
+
     if book:
-        return jsonify(book)
+        response = jsonify(book)
+        if progress:
+            response.headers['X-Progress'] = json.dumps(progress)
+        return response
     return jsonify({'error': 'Book not found'}), 404
 
 @app.route('/api/books', methods=['POST'])
@@ -69,7 +151,13 @@ def create_book():
     data['books'].append(new_book)
     write_data(data)
 
-    return jsonify(new_book), 201
+    progress = update_progress('POST')
+    response = jsonify(new_book)
+
+    if progress:
+        response.headers['X-Progress'] = json.dumps(progress)
+
+    return response, 201
 
 @app.route('/api/books/<int:book_id>', methods=['PUT'])
 def update_book(book_id):
@@ -78,7 +166,6 @@ def update_book(book_id):
 
     update_data = request.get_json()
 
-    # For PUT, require title field
     if 'title' not in update_data:
         return jsonify({
             'error': 'Title is required for PUT operations'
@@ -90,7 +177,6 @@ def update_book(book_id):
     if book_index is None:
         return jsonify({'error': 'Book not found'}), 404
 
-    # Keep only the ID and available status, replace everything else
     old_book = data['books'][book_index]
     data['books'][book_index] = {
         'id': old_book['id'],
@@ -101,7 +187,14 @@ def update_book(book_id):
     }
 
     write_data(data)
-    return jsonify(data['books'][book_index])
+
+    progress = update_progress('PUT')
+    response = jsonify(data['books'][book_index])
+
+    if progress:
+        response.headers['X-Progress'] = json.dumps(progress)
+
+    return response
 
 @app.route('/api/books/<int:book_id>', methods=['PATCH'])
 def patch_book(book_id):
@@ -110,7 +203,6 @@ def patch_book(book_id):
 
     update_data = request.get_json()
 
-    # For PATCH, at least one field must be provided
     if not any(k in update_data for k in ('title', 'author', 'year')):
         return jsonify({
             'error': 'At least one field (title, author, or year) is required for PATCH operations'
@@ -122,14 +214,20 @@ def patch_book(book_id):
     if book_index is None:
         return jsonify({'error': 'Book not found'}), 404
 
-    # Update only the provided fields
     old_book = data['books'][book_index]
     for field in ('title', 'author', 'year'):
         if field in update_data:
             old_book[field] = update_data[field]
 
     write_data(data)
-    return jsonify(data['books'][book_index])
+
+    progress = update_progress('PATCH')
+    response = jsonify(data['books'][book_index])
+
+    if progress:
+        response.headers['X-Progress'] = json.dumps(progress)
+
+    return response
 
 @app.route('/api/books/<int:book_id>', methods=['DELETE'])
 def delete_book(book_id):
@@ -142,14 +240,22 @@ def delete_book(book_id):
     data['books'].pop(book_index)
     write_data(data)
 
-    return '', 204
+    progress = update_progress('DELETE')
+    response = jsonify({})
+
+    if progress:
+        response.headers['X-Progress'] = json.dumps(progress)
+
+    return response, 204
 
 if __name__ == '__main__':
-    # Ensure the data directory exists
+    # Ensure the data directories exist
     os.makedirs('data', exist_ok=True)
 
-    # Create initial data file if it doesn't exist
+    # Create initial data files if they don't exist
     if not os.path.exists(DATA_FILE):
         write_data({'books': []})
+    if not os.path.exists(PROGRESS_FILE):
+        write_progress({})
 
     app.run(port=3000, debug=True)

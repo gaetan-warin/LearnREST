@@ -20,14 +20,22 @@ def write_data(data):
     with open(DATA_FILE, 'w') as f:
         json.dump(data, f, indent=4)
 
-# Serve static files
+# Static file routes
 @app.route('/')
 def root():
     return send_from_directory('.', 'index.html')
 
-@app.route('/<path:path>')
-def static_files(path):
-    return send_from_directory('.', path)
+@app.route('/js/<path:path>')
+def send_js(path):
+    return send_from_directory('js', path)
+
+@app.route('/styles/<path:path>')
+def send_css(path):
+    return send_from_directory('styles', path)
+
+@app.route('/data/<path:path>')
+def send_data(path):
+    return send_from_directory('data', path)
 
 # API Routes
 @app.route('/api/books', methods=['GET'])
@@ -94,4 +102,11 @@ def delete_book(book_id):
     return '', 204
 
 if __name__ == '__main__':
+    # Ensure the data directory exists
+    os.makedirs('data', exist_ok=True)
+
+    # Create initial data file if it doesn't exist
+    if not os.path.exists(DATA_FILE):
+        write_data({'books': []})
+
     app.run(port=3000, debug=True)

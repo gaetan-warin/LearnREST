@@ -7,48 +7,157 @@
     <title>REST Quest - Learn REST APIs Through Adventure!</title>
     <link rel="stylesheet" href="styles/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 
 <body>
-    <div class="game-container">
-        <header class="game-header">
-            <h1>REST Quest</h1>
-            <div class="progress-bar">
-                <div class="progress" style="width: 0%"></div>
-            </div>
-        </header>
+    <div id="app">
+        <div class="game-container">
+            <header class="game-header">
+                <h1>REST Quest</h1>
+                <div class="progress-bar">
+                    <div class="progress" :style="{ width: progressWidth + '%' }"></div>
+                </div>
+            </header>
 
-        <main class="game-content">
-            <div class="level active" id="welcome-level">
-                <h2>Welcome to REST Quest!</h2>
-                <p>Embark on an exciting journey to master REST APIs! In this adventure, you'll:</p>
-                <ul class="quest-goals">
-                    <li>Discover the fundamentals of REST</li>
-                    <li>Learn about HTTP methods</li>
-                    <li>Master resource manipulation</li>
-                    <li>Become a RESTful architect</li>
-                </ul>
-                <div class="character-dialog">
-                    <div class="character">
-                        <div class="character-avatar">🧙‍♂️</div>
+            <main class="game-content">
+                <!-- Welcome Level -->
+                <div v-if="currentLevel === 0" class="level">
+                    <h2>Welcome to REST Quest!</h2>
+                    <p>Embark on an exciting journey to master REST APIs! In this adventure, you'll:</p>
+                    <ul class="quest-goals">
+                        <li>Discover the fundamentals of REST</li>
+                        <li>Learn about HTTP methods</li>
+                        <li>Master resource manipulation</li>
+                        <li>Become a RESTful architect</li>
+                    </ul>
+                    <div class="character-dialog">
+                        <div class="character">
+                            <div class="character-avatar">🧙‍♂️</div>
+                        </div>
+                        <div class="dialog-box">
+                            <p>Greetings, brave explorer! I'm Professor REST, and I'll be your guide through the magical
+                                world of APIs. Are you ready to begin your journey?</p>
+                        </div>
                     </div>
-                    <div class="dialog-box">
-                        <p>Greetings, brave explorer! I'm Professor REST, and I'll be your guide through the magical
-                            world of APIs. Are you ready to begin your journey?</p>
+                    <button class="action-button" @click="startJourney">Begin Adventure!</button>
+                </div>
+
+                <!-- REST Basics Level -->
+                <div v-if="currentLevel === 1" class="level">
+                    <h2>Understanding REST</h2>
+                    <p>REST (Representational State Transfer) is an architectural style for designing networked
+                        applications. Think of it as a set of rules for how computers should talk to each other over the
+                        internet.</p>
+                    <div class="character-dialog">
+                        <div class="character">
+                            <div class="character-avatar">🧙‍♂️</div>
+                        </div>
+                        <div class="dialog-box">
+                            <p>Let's start with a simple analogy: Imagine a library. In REST:</p>
+                            <ul>
+                                <li>Books are like <strong>resources</strong></li>
+                                <li>The library catalog is like an <strong>API</strong></li>
+                                <li>Library cards are like <strong>authentication</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="interactive-demo">
+                        <h3>Try It Out!</h3>
+                        <p>Let's make our first GET request to see all books:</p>
+                        <button class="action-button" @click="handleGetAllBooks">GET /api/books</button>
+                        <div class="response-box">
+                            <div v-if="apiResponse"
+                                :class="['api-response', apiResponse.success ? 'success' : 'error']">
+                                <p class="status">Status: {{ apiResponse.status }}</p>
+                                <pre>{{ apiResponse.data }}</pre>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <button class="action-button" onclick="startJourney()">Begin Adventure!</button>
-            </div>
-        </main>
 
-        <footer class="game-footer">
-            <div class="controls">
-                <button class="nav-button" id="prev-btn" disabled>Previous</button>
-                <button class="nav-button" id="next-btn" disabled>Next</button>
+                <!-- HTTP Methods Level -->
+                <div v-if="currentLevel === 2" class="level">
+                    <h2>HTTP Methods - The CRUD Operations</h2>
+                    <p>REST APIs use HTTP methods to perform different actions on resources. Let's try them all!</p>
+                    <div class="method-cards">
+                        <div class="method-card get">
+                            <h3>GET</h3>
+                            <p>Retrieves information</p>
+                            <input type="number" v-model="getBookId" placeholder="Enter book ID">
+                            <button @click="handleGetBook">GET /api/books/{id}</button>
+                        </div>
+                        <div class="method-card post">
+                            <h3>POST</h3>
+                            <p>Creates new resources</p>
+                            <input type="text" v-model="newBook.title" placeholder="Book title">
+                            <input type="text" v-model="newBook.author" placeholder="Author">
+                            <input type="number" v-model="newBook.year" placeholder="Year">
+                            <button @click="handleCreateBook">POST /api/books</button>
+                        </div>
+                        <div class="method-card put">
+                            <h3>PUT</h3>
+                            <p>Updates resources</p>
+                            <input type="number" v-model="updateBook.id" placeholder="Book ID">
+                            <input type="text" v-model="updateBook.title" placeholder="New title">
+                            <button @click="handleUpdateBook">PUT /api/books/{id}</button>
+                        </div>
+                        <div class="method-card delete">
+                            <h3>DELETE</h3>
+                            <p>Removes resources</p>
+                            <input type="number" v-model="deleteBookId" placeholder="Book ID">
+                            <button @click="handleDeleteBook">DELETE /api/books/{id}</button>
+                        </div>
+                    </div>
+                    <div class="response-box">
+                        <div v-if="methodResponse"
+                            :class="['api-response', methodResponse.success ? 'success' : 'error']">
+                            <p class="status">Status: {{ methodResponse.status }}</p>
+                            <pre>{{ methodResponse.data }}</pre>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Current Library State (Always Visible) -->
+            <div class="library-state" v-if="currentLevel > 0">
+                <h3>Current Library State</h3>
+                <div class="books-table" v-if="books.length > 0">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Year</th>
+                                <th>Available</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="book in books" :key="book.id">
+                                <td>{{ book.id }}</td>
+                                <td>{{ book.title }}</td>
+                                <td>{{ book.author }}</td>
+                                <td>{{ book.year }}</td>
+                                <td>{{ book.available ? '✅' : '❌' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div v-else class="empty-state">
+                    <p>No books in the library yet. Try adding some!</p>
+                </div>
             </div>
-        </footer>
+
+            <footer class="game-footer">
+                <div class="controls">
+                    <button class="nav-button" :disabled="currentLevel === 0" @click="previousLevel">Previous</button>
+                    <button class="nav-button" :disabled="!canAdvance" @click="nextLevel">Next</button>
+                </div>
+            </footer>
+        </div>
     </div>
-    <script src="js/game.js"></script>
+    <script type="module" src="js/app.js"></script>
 </body>
 
 </html>

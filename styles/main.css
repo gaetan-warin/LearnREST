@@ -7,6 +7,7 @@
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --error-color: #F44336;
     --success-color: #4CAF50;
+    --divider-color: #E1E8ED;
 }
 
 * {
@@ -50,7 +51,7 @@ body {
 .progress {
     height: 100%;
     background-color: var(--secondary-color);
-    transition: width 0.3s ease;
+    transition: width 0.5s ease;
 }
 
 .game-content {
@@ -58,14 +59,11 @@ body {
     padding: 2rem;
     border-radius: 12px;
     box-shadow: var(--shadow);
+    margin-bottom: 2rem;
 }
 
 .level {
-    display: none;
-}
-
-.level.active {
-    display: block;
+    animation: fadeIn 0.5s ease;
 }
 
 .quest-goals {
@@ -97,6 +95,7 @@ body {
     font-size: 3rem;
     min-width: 60px;
     text-align: center;
+    animation: bounce 1s ease infinite;
 }
 
 .dialog-box {
@@ -105,6 +104,7 @@ body {
     border-radius: 12px;
     position: relative;
     flex: 1;
+    animation: slideIn 0.5s ease;
 }
 
 .dialog-box:before {
@@ -166,6 +166,31 @@ body {
     color: white;
 }
 
+/* Library State */
+.library-state {
+    background-color: var(--dialog-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin: 2rem 0;
+    animation: slideUp 0.5s ease;
+}
+
+.library-state h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    color: #666;
+    font-style: italic;
+}
+
 /* Method Cards Styling */
 .method-cards {
     display: grid;
@@ -179,6 +204,11 @@ body {
     border-radius: 8px;
     box-shadow: var(--shadow);
     text-align: center;
+    transition: transform 0.2s;
+}
+
+.method-card:hover {
+    transform: translateY(-2px);
 }
 
 .method-card input {
@@ -188,6 +218,12 @@ body {
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 0.9rem;
+    transition: border-color 0.2s;
+}
+
+.method-card input:focus {
+    outline: none;
+    border-color: var(--primary-color);
 }
 
 .method-card button {
@@ -246,20 +282,6 @@ body {
     transform: translateY(-2px);
 }
 
-.method-card h3 {
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
-}
-
-.method-card code {
-    display: block;
-    margin-top: 1rem;
-    padding: 0.5rem;
-    background: rgba(255, 255, 255, 0.7);
-    border-radius: 4px;
-    font-family: monospace;
-}
-
 /* API Response Styling */
 .interactive-demo {
     margin: 2rem 0;
@@ -270,6 +292,7 @@ body {
 
 .response-box {
     margin-top: 1.5rem;
+    min-height: 100px;
 }
 
 .api-response {
@@ -278,6 +301,7 @@ body {
     padding: 1rem;
     margin-top: 1rem;
     box-shadow: var(--shadow);
+    animation: slideUp 0.3s ease;
 }
 
 .api-response.success {
@@ -307,38 +331,93 @@ body {
     border-radius: 4px;
     overflow-x: auto;
     font-family: monospace;
+    font-size: 0.9rem;
 }
 
 /* Books Table Styling */
 .books-table {
-    margin: 2rem 0;
+    margin: 0;
     overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
 }
 
 .books-table table {
     width: 100%;
     border-collapse: collapse;
     background-color: white;
-    box-shadow: var(--shadow);
 }
 
 .books-table th,
 .books-table td {
     padding: 1rem;
     text-align: left;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--divider-color);
 }
 
 .books-table th {
     background-color: var(--primary-color);
     color: white;
     font-weight: 600;
+    white-space: nowrap;
+}
+
+.books-table tr:last-child td {
+    border-bottom: none;
 }
 
 .books-table tr:hover {
     background-color: #f5f5f5;
 }
 
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
     .game-container {
         margin: 1rem;
@@ -368,5 +447,10 @@ body {
     .books-table td {
         padding: 0.75rem;
         font-size: 0.9rem;
+    }
+
+    .library-state {
+        margin: 1rem;
+        padding: 1rem;
     }
 }

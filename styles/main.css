@@ -7,6 +7,7 @@
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --error-color: #F44336;
     --success-color: #4CAF50;
+    --patch-color: #9C27B0;
     --divider-color: #E1E8ED;
 }
 
@@ -166,31 +167,6 @@ body {
     color: white;
 }
 
-/* Library State */
-.library-state {
-    background-color: var(--dialog-bg);
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    margin: 2rem 0;
-    animation: slideUp 0.5s ease;
-}
-
-.library-state h3 {
-    color: var(--primary-color);
-    margin-bottom: 1.5rem;
-    text-align: center;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 2rem;
-    background-color: var(--background-color);
-    border-radius: 8px;
-    color: #666;
-    font-style: italic;
-}
-
 /* Method Cards Styling */
 .method-cards {
     display: grid;
@@ -267,6 +243,16 @@ body {
     color: white;
 }
 
+.method-card.patch {
+    background-color: #F3E5F5;
+    border: 2px solid var(--patch-color);
+}
+
+.method-card.patch button {
+    background-color: var(--patch-color);
+    color: white;
+}
+
 .method-card.delete {
     background-color: #FFEBEE;
     border: 2px solid #F44336;
@@ -280,6 +266,13 @@ body {
 .method-card button:hover {
     filter: brightness(1.1);
     transform: translateY(-2px);
+}
+
+.field-note {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0.5rem 0;
+    font-style: italic;
 }
 
 /* API Response Styling */
@@ -335,6 +328,21 @@ body {
 }
 
 /* Books Table Styling */
+.library-state {
+    background-color: var(--dialog-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    margin: 2rem 0;
+    animation: slideUp 0.5s ease;
+}
+
+.library-state h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
 .books-table {
     margin: 0;
     overflow-x: auto;
@@ -368,6 +376,15 @@ body {
 
 .books-table tr:hover {
     background-color: #f5f5f5;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    color: #666;
+    font-style: italic;
 }
 
 /* Animations */

@@ -76,16 +76,59 @@ def update_book(book_id):
     if not request.is_json:
         return jsonify({'error': 'Content-Type must be application/json'}), 400
 
+    update_data = request.get_json()
+
+    # For PUT, require title field
+    if 'title' not in update_data:
+        return jsonify({
+            'error': 'Title is required for PUT operations'
+        }), 400
+
     data = read_data()
     book_index = next((i for i, b in enumerate(data['books']) if b['id'] == book_id), None)
 
     if book_index is None:
         return jsonify({'error': 'Book not found'}), 404
 
-    update_data = request.get_json()
-    data['books'][book_index].update(update_data)
-    write_data(data)
+    # Keep only the ID and available status, replace everything else
+    old_book = data['books'][book_index]
+    data['books'][book_index] = {
+        'id': old_book['id'],
+        'title': update_data['title'],
+        'author': update_data.get('author', ''),
+        'year': update_data.get('year', None),
+        'available': old_book['available']
+    }
 
+    write_data(data)
+    return jsonify(data['books'][book_index])
+
+@app.route('/api/books/<int:book_id>', methods=['PATCH'])
+def patch_book(book_id):
+    if not request.is_json:
+        return jsonify({'error': 'Content-Type must be application/json'}), 400
+
+    update_data = request.get_json()
+
+    # For PATCH, at least one field must be provided
+    if not any(k in update_data for k in ('title', 'author', 'year')):
+        return jsonify({
+            'error': 'At least one field (title, author, or year) is required for PATCH operations'
+        }), 400
+
+    data = read_data()
+    book_index = next((i for i, b in enumerate(data['books']) if b['id'] == book_id), None)
+
+    if book_index is None:
+        return jsonify({'error': 'Book not found'}), 404
+
+    # Update only the provided fields
+    old_book = data['books'][book_index]
+    for field in ('title', 'author', 'year'):
+        if field in update_data:
+            old_book[field] = update_data[field]
+
+    write_data(data)
     return jsonify(data['books'][book_index])
 
 @app.route('/api/books/<int:book_id>', methods=['DELETE'])

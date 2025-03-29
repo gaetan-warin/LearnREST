@@ -544,7 +544,7 @@
             <footer class="game-footer">
                 <div class="controls" v-if="gameStarted">
                     <button class="nav-button" :disabled="currentLevel === 1" @click="previousLevel">Previous</button>
-                    <button class="nav-button" :disabled="!canAdvance" @click="nextLevel">Next</button>
+                    <button class="nav-button" @click="nextLevel">Next</button>
                 </div>
             </footer>
         </div>

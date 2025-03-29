@@ -38,22 +38,16 @@ const app = Vue.createApp({
         const progressWidth = computed(() => {
             if (currentLevel.value === 7) return 100; // Documentation level
             const methodCount = progress.value.completed_methods.length;
-            const totalMethods = 5; // GET, POST, PUT, PATCH, DELETE
+            const totalMethods = 6; // GET, GET_ID, POST, PUT, PATCH, DELETE
             return (methodCount / totalMethods) * 100;
         });
 
         const canAdvance = computed(() => {
-            if (!gameStarted.value) return false;
-            if (currentLevel.value === 6 && progress.value.completed_methods.includes('DELETE')) {
-                return true; // Allow advancing to documentation after DELETE
-            }
-            if (currentLevel.value === 7) return false; // No advancing from documentation
-            const currentMethod = getCurrentMethodForLevel(currentLevel.value);
-            return progress.value.completed_methods.includes(currentMethod);
+            return true;
         });
 
         const allMethodsCompleted = computed(() => {
-            const requiredMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+            const requiredMethods = ['GET', 'GET_ID', 'POST', 'PUT', 'PATCH', 'DELETE'];
             return requiredMethods.every(method =>
                 progress.value.completed_methods.includes(method)
             );
@@ -105,7 +99,7 @@ const app = Vue.createApp({
         };
 
         const nextLevel = () => {
-            if (canAdvance.value && currentLevel.value < 7) {
+            if (currentLevel.value < 7) {
                 currentLevel.value++;
                 resetResponses();
                 if (currentLevel.value < 7) {
@@ -137,10 +131,6 @@ const app = Vue.createApp({
 
                 if (response.ok) {
                     books.value = data;
-                    if (selectedMode.value === 'beginner') {
-                        progress.value.completed_methods = [...new Set([...progress.value.completed_methods, 'GET'])];
-                        showSuccess('GET request successful! You can now proceed to the next level.');
-                    }
                     await fetchProgress();
                 }
             } catch (error) {
@@ -166,10 +156,6 @@ const app = Vue.createApp({
                 if (response.ok) {
                     books.value = data;
                     await fetchProgress();
-                    if (selectedMode.value === 'beginner') {
-                        progress.value.completed_methods = [...new Set([...progress.value.completed_methods, 'GET_ID'])];
-                        showSuccess('GET ID request successful! You can now proceed to the next level.');
-                    }
                 }
             } catch (error) {
                 showError('Failed to fetch books. Make sure the server is running.');
@@ -208,8 +194,6 @@ const app = Vue.createApp({
                     refreshBooksTable();
                     newBook.value = { title: '', author: '', year: '' };
                     await fetchProgress();
-                    progress.value.completed_methods = [...new Set([...progress.value.completed_methods, 'POST'])];
-                    showSuccess('POST request successful! You can now proceed to the next level.');
                 }
             } catch (error) {
                 showError('Failed to create book. Make sure the server is running.');
@@ -250,8 +234,6 @@ const app = Vue.createApp({
                     refreshBooksTable();
                     updateBook.value = { id: '', title: '', author: '', year: '' };
                     await fetchProgress();
-                    progress.value.completed_methods = [...new Set([...progress.value.completed_methods, 'PUT'])];
-                    showSuccess('PUT request successful! You can now proceed to the next level.');
                 }
             } catch (error) {
                 showError('Failed to update book. Make sure the server is running.');
@@ -296,8 +278,6 @@ const app = Vue.createApp({
                     refreshBooksTable();
                     patchBook.value = { id: '', title: '', author: '', year: '' };
                     await fetchProgress();
-                    progress.value.completed_methods = [...new Set([...progress.value.completed_methods, 'PATCH'])];
-                    showSuccess('PATCH request successful! You can now proceed to the next level.');
                 }
             } catch (error) {
                 showError('Failed to patch book. Make sure the server is running.');
@@ -328,8 +308,6 @@ const app = Vue.createApp({
                     refreshBooksTable();
                     deleteBookId.value = '';
                     await fetchProgress();
-                    progress.value.completed_methods = [...new Set([...progress.value.completed_methods, 'DELETE'])];
-                    showSuccess('DELETE request successful! You can now proceed to the documentation.');
                 }
             } catch (error) {
                 showError('Failed to delete book. Make sure the server is running.');
@@ -414,7 +392,6 @@ const app = Vue.createApp({
             previousLevel,
             nextLevel,
             handleGetAllBooks,
-            handleGetBook,
             handleCreateBook,
             handleUpdateBook,
             handlePatchBook,

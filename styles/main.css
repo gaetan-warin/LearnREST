@@ -1,0 +1,372 @@
+:root {
+    --primary-color: #4A90E2;
+    --secondary-color: #50E3C2;
+    --background-color: #F5F7FA;
+    --text-color: #2C3E50;
+    --dialog-bg: #FFFFFF;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --error-color: #F44336;
+    --success-color: #4CAF50;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.game-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.game-header h1 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #E1E8ED;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background-color: var(--secondary-color);
+    transition: width 0.3s ease;
+}
+
+.game-content {
+    background-color: var(--dialog-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.level {
+    display: none;
+}
+
+.level.active {
+    display: block;
+}
+
+.quest-goals {
+    list-style: none;
+    margin: 2rem 0;
+}
+
+.quest-goals li {
+    margin: 1rem 0;
+    padding-left: 2rem;
+    position: relative;
+}
+
+.quest-goals li:before {
+    content: '⚡';
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+}
+
+.character-dialog {
+    display: flex;
+    align-items: flex-start;
+    margin: 2rem 0;
+    gap: 1rem;
+}
+
+.character-avatar {
+    font-size: 3rem;
+    min-width: 60px;
+    text-align: center;
+}
+
+.dialog-box {
+    background-color: var(--background-color);
+    padding: 1.5rem;
+    border-radius: 12px;
+    position: relative;
+    flex: 1;
+}
+
+.dialog-box:before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 20px;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid var(--background-color);
+}
+
+.action-button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: block;
+    margin: 2rem auto;
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.game-footer {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.nav-button {
+    background-color: var(--dialog-bg);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.nav-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.nav-button:not(:disabled):hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Method Cards Styling */
+.method-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.method-card {
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.method-card input {
+    width: 100%;
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.method-card button {
+    width: 100%;
+    padding: 0.8rem;
+    margin-top: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.method-card.get {
+    background-color: #E3F2FD;
+    border: 2px solid #2196F3;
+}
+
+.method-card.get button {
+    background-color: #2196F3;
+    color: white;
+}
+
+.method-card.post {
+    background-color: #E8F5E9;
+    border: 2px solid #4CAF50;
+}
+
+.method-card.post button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.method-card.put {
+    background-color: #FFF3E0;
+    border: 2px solid #FF9800;
+}
+
+.method-card.put button {
+    background-color: #FF9800;
+    color: white;
+}
+
+.method-card.delete {
+    background-color: #FFEBEE;
+    border: 2px solid #F44336;
+}
+
+.method-card.delete button {
+    background-color: #F44336;
+    color: white;
+}
+
+.method-card button:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+}
+
+.method-card h3 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.method-card code {
+    display: block;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+/* API Response Styling */
+.interactive-demo {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background-color: #F8F9FA;
+    border-radius: 8px;
+}
+
+.response-box {
+    margin-top: 1.5rem;
+}
+
+.api-response {
+    background: #FFFFFF;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-top: 1rem;
+    box-shadow: var(--shadow);
+}
+
+.api-response.success {
+    border-left: 4px solid var(--success-color);
+}
+
+.api-response.error {
+    border-left: 4px solid var(--error-color);
+}
+
+.api-response .status {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.api-response.success .status {
+    color: var(--success-color);
+}
+
+.api-response.error .status {
+    color: var(--error-color);
+}
+
+.api-response pre {
+    background-color: #F8F9FA;
+    padding: 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: monospace;
+}
+
+/* Books Table Styling */
+.books-table {
+    margin: 2rem 0;
+    overflow-x: auto;
+}
+
+.books-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: var(--shadow);
+}
+
+.books-table th,
+.books-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.books-table th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+}
+
+.books-table tr:hover {
+    background-color: #f5f5f5;
+}
+
+@media (max-width: 768px) {
+    .game-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .character-dialog {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .dialog-box:before {
+        display: none;
+    }
+
+    .method-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .books-table {
+        margin: 1rem -1rem;
+        width: calc(100% + 2rem);
+    }
+
+    .books-table th,
+    .books-table td {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+}

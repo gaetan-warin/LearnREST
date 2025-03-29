@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST Quest - Learn REST APIs Through Adventure!</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <h1>REST Quest</h1>
+            <div class="progress-bar">
+                <div class="progress" style="width: 0%"></div>
+            </div>
+        </header>
+
+        <main class="game-content">
+            <div class="level active" id="welcome-level">
+                <h2>Welcome to REST Quest!</h2>
+                <p>Embark on an exciting journey to master REST APIs! In this adventure, you'll:</p>
+                <ul class="quest-goals">
+                    <li>Discover the fundamentals of REST</li>
+                    <li>Learn about HTTP methods</li>
+                    <li>Master resource manipulation</li>
+                    <li>Become a RESTful architect</li>
+                </ul>
+                <div class="character-dialog">
+                    <div class="character">
+                        <div class="character-avatar">🧙‍♂️</div>
+                    </div>
+                    <div class="dialog-box">
+                        <p>Greetings, brave explorer! I'm Professor REST, and I'll be your guide through the magical
+                            world of APIs. Are you ready to begin your journey?</p>
+                    </div>
+                </div>
+                <button class="action-button" onclick="startJourney()">Begin Adventure!</button>
+            </div>
+        </main>
+
+        <footer class="game-footer">
+            <div class="controls">
+                <button class="nav-button" id="prev-btn" disabled>Previous</button>
+                <button class="nav-button" id="next-btn" disabled>Next</button>
+            </div>
+        </footer>
+    </div>
+    <script src="js/game.js"></script>
+</body>
+
+</html>

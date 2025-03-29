@@ -1,0 +1,18 @@
+{
+    "books": [
+        {
+            "id": 1,
+            "title": "Understanding REST APIs",
+            "author": "John Developer",
+            "year": 2023,
+            "available": true
+        },
+        {
+            "id": 2,
+            "title": "HTTP Methods Explained",
+            "author": "Jane Coder",
+            "year": 2024,
+            "available": true
+        }
+    ]
+}

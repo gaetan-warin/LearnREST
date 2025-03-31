@@ -91,9 +91,13 @@ const app = Vue.createApp({
         };
 
         const previousLevel = () => {
-            if (currentLevel.value > 1) {
+            if (currentLevel.value > 0) {
                 currentLevel.value--;
                 resetResponses();
+                if (currentLevel.value === 0) {
+                    gameStarted.value = false;
+                    return;
+                }
                 refreshBooksTable();
             }
         };

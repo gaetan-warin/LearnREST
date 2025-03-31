@@ -160,7 +160,6 @@ const app = Vue.createApp({
                 };
 
                 if (response.ok) {
-                    books.value = data;
                     await fetchProgress();
                     progress.value.completed_methods = [...new Set([...progress.value.completed_methods, 'GET_ID'])];
                     showSuccess('GET ID request successful! You can now proceed to the next level.');

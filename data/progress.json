@@ -22,7 +22,7 @@
         "current_level": 0
     },
     "127.0.0.1": {
-        "mode": "advanced",
+        "mode": "beginner",
         "completed_methods": [
             "DELETE",
             "GET",

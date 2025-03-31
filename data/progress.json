@@ -26,7 +26,8 @@
         "completed_methods": [
             "DELETE",
             "GET",
-            "GET_ID"
+            "GET_ID",
+            "POST"
         ],
         "current_level": 0
     }

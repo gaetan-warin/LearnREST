@@ -25,14 +25,23 @@
                 <!-- Mode Selection Level -->
                 <div v-if="!gameStarted" class="level">
                     <h2>Welcome to REST Quest!</h2>
+                    <div class="story-intro">
+                        <p>Once upon a time, there was a smart little kid named Alex. Alex dreamed of having
+                            superpowers—the ability to instantly find any information, open doors to secret knowledge,
+                            and communicate with the world in a blink!</p>
+                        <p>One day, Alex discovered a mystical library filled with all the world's knowledge! But there
+                            was a problem... the books were locked away.</p>
+                    </div>
                     <div class="character-dialog">
                         <div class="character">
                             <div class="character-avatar">🧙‍♂️</div>
                         </div>
                         <div class="dialog-box">
-                            <p>Greetings, brave explorer! I'm Professor REST, the head librarian of the Magical Library
-                                of APIs.</p>
-                            <p>Before we begin, please choose your learning path:</p>
+                            <p>Greetings, young explorer! I'm Professor REST, the head librarian. To access any book,
+                                you must follow the library's special rules—our protocol!</p>
+                            <p>Just like this library, the internet follows protocols to communicate between computers.
+                                Are you ready to learn these magical protocols?</p>
+                            <p>Choose your learning path:</p>
                         </div>
                     </div>
 
@@ -40,12 +49,12 @@
                         <div class="mode-card" :class="{ active: selectedMode === 'beginner' }"
                             @click="selectMode('beginner')">
                             <h3>Beginner Mode</h3>
-                            <div class="mode-icon">🎯</div>
-                            <p>Interactive UI with guided examples</p>
+                            <div class="mode-icon">🔮</div>
+                            <p>Apprentice Wizard Path</p>
                             <ul>
-                                <li>User-friendly interface</li>
-                                <li>Step-by-step guidance</li>
-                                <li>Instant visual feedback</li>
+                                <li>Interactive magical spells</li>
+                                <li>Step-by-step guidance from the librarian</li>
+                                <li>Instant magical feedback</li>
                             </ul>
                         </div>
 
@@ -53,35 +62,45 @@
                             @click="selectMode('advanced')">
                             <h3>Advanced Mode</h3>
                             <div class="mode-icon">🚀</div>
-                            <p>External API calls with code examples</p>
+                            <p>Master Wizard Path</p>
                             <ul>
-                                <li>Real API integration</li>
-                                <li>Multiple language examples</li>
+                                <li>Advanced spell crafting</li>
+                                <li>Multi-language incantations</li>
                                 <li>Tool-based learning</li>
                             </ul>
                         </div>
                     </div>
 
                     <button class="action-button" @click="startJourney" :disabled="!selectedMode">
-                        Begin {{ selectedMode === 'beginner' ? 'Interactive' : 'Advanced' }} Journey!
+                        Begin Your {{ selectedMode === 'beginner' ? 'Apprentice' : 'Master' }} Wizard Journey!
+                        ✨
                     </button>
                 </div>
 
                 <!-- GET All Level -->
                 <div v-if="gameStarted && currentLevel === 1" class="level">
                     <h2>The GET Method - Finding Treasures</h2>
+                    <div class="story-progress">
+                        <p>Alex wanted to learn the first magical spell - how to find and read books from the
+                            library.</p>
+                    </div>
                     <div class="character-dialog">
                         <div class="character">
                             <div class="character-avatar">🧙‍♂️</div>
                         </div>
                         <div class="dialog-box">
-                            <p>Ah, let's start with GET - the most basic and safest spell in our collection! Think of
-                                GET like using a magical lens to read a book:</p>
+                            <p>"Excellent, young apprentice! Let's start with the GET spell - your first superpower!"
+                                the librarian exclaimed. "This spell allows you to read information, just like using a
+                                magical lens to view a book:"</p>
                             <ul>
-                                <li>It's <strong>read-only</strong> - you can't change the book by looking at it</li>
-                                <li>It's <strong>safe</strong> - you can use it as many times as you want</li>
-                                <li>It's <strong>idempotent</strong> - looking at the same book multiple times shows the
-                                    same content</li>
+                                <li>It's <strong>read-only</strong> - just like how looking at a book doesn't change its
+                                    contents</li>
+                                <li>It's <strong>safe</strong> - you can use it as many times as you want without any
+                                    consequences</li>
+                                <li>It's <strong>idempotent</strong> - reading the same book multiple times will always
+                                    show you the same story</li>
+                                <li>Status code 200 means "Here's your book!" while 404 means "Sorry, we couldn't find
+                                    that book."</li>
                             </ul>
                             <p>Let's try viewing our collection!</p>
                         </div>
@@ -115,17 +134,24 @@
                 <!-- GET ID Level -->
                 <div v-if="gameStarted && currentLevel === 2" class="level">
                     <h2>The GET Method - Finding a Specific Treasure</h2>
+                    <div class="story-progress">
+                        <p>"Wonderful!" Alex exclaimed after seeing all the books. "But how can I find just one specific
+                            book I'm looking for?"</p>
+                    </div>
                     <div class="character-dialog">
                         <div class="character">
                             <div class="character-avatar">🧙‍♂️</div>
                         </div>
                         <div class="dialog-box">
-                            <p>Now let's try finding a specific book using its ID. This is like using a magical locator
-                                spell:</p>
+                            <p>"Ah," the librarian's eyes twinkled, "for that, we need to enhance our GET spell with a
+                                special identifier - the book's magical ID number!"</p>
                             <ul>
-                                <li>It's <strong>read-only</strong> - you can't change the book by looking at it</li>
+                                <li>Each book has a unique <strong>magical ID</strong> number</li>
+                                <li>Adding the ID to your spell makes it more precise</li>
+                                <li>It's still <strong>safe</strong> and <strong>read-only</strong> like our previous
+                                    spell</li>
                             </ul>
-                            <p>Enter the ID of the book you want to find!</p>
+                            <p>"Try it yourself! Pick a book's ID from the library below, and use it in your spell!"</p>
                         </div>
                     </div>
 
@@ -133,12 +159,12 @@
                         <div class="method-card get">
                             <h3>GET a Specific Book</h3>
                             <input type="number" v-model="getBookId" placeholder="Book ID (required)">
-                            <button @click="handleGetBook">GET /api/books/{id}</button>
+                            <button @click="handleGetBook">Cast GET Spell: /api/books/{id}</button>
                         </div>
                         <div class="response-box">
                             <div v-if="apiResponse"
-                                :class="['api-response', apiResponse.success ? 'success' : 'error']">
-                                <p class="status">Status: {{ apiResponse.status }}</p>
+                                :class="['api-response magic-reveal', apiResponse.success ? 'success' : 'error']">
+                                <p class="status">Spell Result: {{ apiResponse.status }}</p>
                                 <pre>{{ apiResponse.data }}</pre>
                             </div>
                         </div>
@@ -160,20 +186,29 @@
                 <!-- POST Level -->
                 <div v-if="gameStarted && currentLevel === 3" class="level">
                     <h2>The POST Method - Creating New Treasures</h2>
+                    <div class="story-progress">
+                        <p>"This is amazing!" Alex beamed. "But what if I want to add my own book to the library?"</p>
+                    </div>
                     <div class="character-dialog">
                         <div class="character">
                             <div class="character-avatar">🧙‍♂️</div>
                         </div>
                         <div class="dialog-box">
-                            <p>Excellent! Now let's learn POST - the creation spell! POST is like writing a new book for
-                                our library:</p>
+                            <p>"Now that's the spirit of a true librarian!" The wizard clapped enthusiastically. "For
+                                that, you'll need the POST spell - the magic of creation!"</p>
                             <ul>
-                                <li>It <strong>creates</strong> new resources</li>
-                                <li>It's <strong>not idempotent</strong> - using it twice creates two different books
-                                </li>
-                                <li>All fields are <strong>required</strong> for creating a new book</li>
+                                <li>This spell <strong>creates</strong> new books in our collection</li>
+                                <li>Each spell cast creates a <strong>unique</strong> book - even with the same
+                                    information</li>
+                                <li>You must provide all the required magical properties (title, author, year)</li>
+                                <li>If successful, you'll receive a <strong>201 Created</strong> response - 'A new book
+                                    appears!'</li>
                             </ul>
-                            <p>Try adding a new book to our collection!</p>
+                            <div class="character">
+                                <div class="character-avatar">📚✨</div>
+                            </div>
+                            <p>The wizard handed Alex a blank book. "Now, what story would you like to add to our
+                                collection?"</p>
                         </div>
                     </div>
 
@@ -182,7 +217,7 @@
                         <input type="text" v-model="newBook.title" placeholder="Book title (required)">
                         <input type="text" v-model="newBook.author" placeholder="Author (required)">
                         <input type="number" v-model="newBook.year" placeholder="Year (required)">
-                        <button @click="handleCreateBook">POST /api/books</button>
+                        <button @click="handleCreateBook">Cast POST Spell: Create New Book</button>
                     </div>
 
                     <div v-else class="code-examples">
@@ -201,22 +236,31 @@
                 <!-- PUT Level -->
                 <div v-if="gameStarted && currentLevel === 4" class="level">
                     <h2>The PUT Method - Complete Transformations</h2>
+                    <div class="story-progress">
+                        <p>"Some of these books need updating," Alex noticed. "Can we change what's written in them?"
+                        </p>
+                    </div>
                     <div class="character-dialog">
                         <div class="character">
                             <div class="character-avatar">🧙‍♂️</div>
                         </div>
                         <div class="dialog-box">
-                            <p>Now for PUT - the transformation spell! PUT is like replacing a book with a new edition:
-                            </p>
+                            <p>"Ah, for that we use the PUT spell - a powerful transformation magic!" The librarian
+                                waved his wand, and a book's pages began to glow. "Watch closely:"</p>
                             <ul>
-                                <li>It <strong>completely replaces</strong> the existing book</li>
-                                <li>Only the <strong>title</strong> is required</li>
-                                <li>Empty fields will <strong>remove</strong> those properties</li>
-                                <li>It's <strong>idempotent</strong> - doing it multiple times has the same effect</li>
+                                <li>This spell <strong>completely replaces</strong> the book with a new edition</li>
+                                <li>You need at least the <strong>title</strong> for the spell to work</li>
+                                <li>Any information you don't provide will be <strong>erased</strong> from the book</li>
+                                <li>The spell is <strong>idempotent</strong> - casting it multiple times with the same
+                                    words has the same effect</li>
                             </ul>
-                            <p>Unlike POST, you can choose which fields to keep or remove!</p>
+                            <p>"Choose your words carefully - this spell rewrites the entire book!"</p>
+                        </div>
+                        <div class="character">
+                            <div class="character-avatar">📖✨</div>
                         </div>
                     </div>
+
 
                     <div v-if="selectedMode === 'beginner'" class="method-card put">
                         <h3>Replace Existing Book</h3>
@@ -226,7 +270,7 @@
                             placeholder="New author (optional, empty to remove)">
                         <input type="number" v-model="updateBook.year"
                             placeholder="New year (optional, empty to remove)">
-                        <button @click="handleUpdateBook">PUT /api/books/{id}</button>
+                        <button @click="handleUpdateBook">Cast PUT Spell: Transform Book</button>
                     </div>
 
                     <div v-else class="code-examples">
@@ -268,7 +312,7 @@
                         <input type="text" v-model="patchBook.title" placeholder="New title (optional)">
                         <input type="text" v-model="patchBook.author" placeholder="New author (optional)">
                         <input type="number" v-model="patchBook.year" placeholder="New year (optional)">
-                        <button @click="handlePatchBook">PATCH /api/books/{id}</button>
+                        <button @click="handlePatchBook">Cast PATCH Spell: Modify Book</button>
                     </div>
 
                     <div v-else class="code-examples">
@@ -287,26 +331,38 @@
                 <!-- DELETE Level -->
                 <div v-if="gameStarted && currentLevel === 6" class="level">
                     <h2>The DELETE Method - Removing Resources</h2>
+                    <div class="story-progress">
+                        <p>"What about books that are too old or damaged?" Alex wondered. "How do we remove them from
+                            the library?"</p>
+                    </div>
                     <div class="character-dialog">
                         <div class="character">
                             <div class="character-avatar">🧙‍♂️</div>
                         </div>
                         <div class="dialog-box">
-                            <p>Finally, we have DELETE - the vanishing spell! DELETE is like removing a book from our
-                                collection:</p>
+                            <p>"Ah, for that we need the DELETE spell - the most powerful and dangerous magic," the
+                                librarian said with a serious tone. "This spell must be used with great caution:"</p>
                             <ul>
-                                <li>It <strong>removes</strong> the resource completely</li>
-                                <li>It's <strong>idempotent</strong> - once gone, deleting again won't change anything
-                                </li>
-                                <li>The ID cannot be reused for new books</li>
+                                <li>This spell makes a book <strong>vanish completely</strong> from our collection</li>
+                                <li>Once cast, the spell cannot be undone - the book is gone forever</li>
+                                <li>It's <strong>idempotent</strong> - casting it again won't change anything
+                                    , as the book is already gone</li>
+                                <li>The book's magical ID can never be used again</li>
                             </ul>
+                            <p>"Remember: With great power comes great responsibility. Use this spell wisely!"</p>
+                        </div>
+                        <div class="character">
+                            <div class="character-avatar">📕💨</div>
                         </div>
                     </div>
 
                     <div v-if="selectedMode === 'beginner'" class="method-card delete">
                         <h3>Remove a Book</h3>
                         <input type="number" v-model="deleteBookId" placeholder="Book ID">
-                        <button @click="handleDeleteBook">DELETE /api/books/{id}</button>
+                        <button @click="handleDeleteBook">Cast DELETE Spell: Vanish Book</button>
+                        <p class="magic-note">
+                            ⚠️ Warning: This spell permanently removes a book from the library. Use with caution!
+                        </p>
                     </div>
 
                     <div v-else class="code-examples">
@@ -325,13 +381,24 @@
                 <!-- Resume/Documentation Level -->
                 <div v-if="gameStarted && currentLevel === 7" class="level documentation">
                     <h2>API Documentation</h2>
+                    <div class="story-progress">
+                        <p>Alex had mastered the basic spells of the magical library. The librarian smiled proudly,
+                            ready to share one final secret.</p>
+                    </div>
                     <div class="documentation-section">
-                        <p>Congratulations on completing the REST Quest! 🎉</p>
-                        <p>For complete API documentation, please visit:</p>
+                        <div class="character-dialog">
+                            <div class="character">
+                                <div class="character-avatar">🧙‍♂️</div>
+                            </div>
+                            <div class="dialog-box">
+                                <p>"Congratulations, young wizard! You've learned the fundamental spells of our magical
+                                    API library. But your journey doesn't end here - I have a special gift for you:
+                                    access to the Grand Tome of API Documentation!"</p>
+                            </div>
+                        </div>
                         <div class="doc-link">
-                            <a href="/docs" target="_blank" class="swagger-link">
-                                Interactive API Documentation (Swagger UI) →
-                            </a>
+                            <a href="/docs" target="_blank" class="swagger-link">📚 Open the Grand Tome of API
+                                Documentation →</a>
                         </div>
                     </div>
                 </div>

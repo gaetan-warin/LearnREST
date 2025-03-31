@@ -11,6 +11,118 @@
     --divider-color: #E1E8ED;
 }
 
+/* Story Elements */
+.story-intro {
+    background-color: rgba(74, 144, 226, 0.1);
+    padding: 2rem;
+    border-radius: 12px;
+    margin: 2rem 0;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    border-left: 4px solid var(--primary-color);
+    animation: fadeIn 0.8s ease;
+}
+
+.story-intro p {
+    margin-bottom: 1rem;
+}
+
+.story-progress {
+    background-color: rgba(80, 227, 194, 0.1);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+    color: var(--text-color);
+    border-left: 4px solid var(--secondary-color);
+    animation: slideIn 0.5s ease;
+}
+
+/* Magical Effects */
+.magic-reveal {
+    position: relative;
+    overflow: hidden;
+}
+
+.magic-reveal::before {
+    content: '✨';
+    position: absolute;
+    font-size: 1.5rem;
+    animation: sparkle 1s ease-out;
+}
+
+.magic-note {
+    font-style: italic;
+    color: var(--text-color);
+    background: rgba(80, 227, 194, 0.1);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--secondary-color);
+    margin: 1rem 0;
+}
+
+/* Magical Effects */
+@keyframes magicalGlow {
+    0% {
+        box-shadow: 0 0 5px var(--primary-color),
+            0 0 10px var(--primary-color),
+            0 0 15px var(--primary-color);
+    }
+
+    50% {
+        box-shadow: 0 0 10px var(--primary-color),
+            0 0 20px var(--primary-color),
+            0 0 30px var(--primary-color);
+    }
+
+    100% {
+        box-shadow: 0 0 5px var(--primary-color),
+            0 0 10px var(--primary-color),
+            0 0 15px var(--primary-color);
+    }
+}
+
+.method-card button {
+    position: relative;
+    overflow: hidden;
+}
+
+.method-card button:hover {
+    animation: magicalGlow 1.5s ease-in-out infinite;
+}
+
+/* Add spacing for DELETE warning */
+.method-card.delete .magic-note {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.documentation-section {
+    text-align: center;
+    padding: 2rem;
+}
+
+.doc-link {
+    margin: 2rem 0;
+}
+
+.doc-link a {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.doc-link a:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+    background-color: #357ABD;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -456,6 +568,28 @@ body {
 
     50% {
         transform: translateY(-5px);
+    }
+}
+
+@keyframes sparkle {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0.8;
+    }
+
+    75% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0.4;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(2.5);
+        opacity: 0;
     }
 }
 

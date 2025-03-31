@@ -20,5 +20,14 @@
             "DELETE"
         ],
         "current_level": 0
+    },
+    "127.0.0.1": {
+        "mode": "beginner",
+        "completed_methods": [
+            "DELETE",
+            "GET",
+            "GET_ID"
+        ],
+        "current_level": 0
     }
 }

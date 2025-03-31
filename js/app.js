@@ -2,7 +2,7 @@ import codeExamples from './examples.js';
 
 const { ref, computed, onMounted, watch } = Vue;
 
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = 'http://localhost:3001/api';
 
 // Create app using Vue.createApp
 const app = Vue.createApp({
@@ -99,7 +99,7 @@ const app = Vue.createApp({
         };
 
         const nextLevel = () => {
-            if (currentLevel.value < 7) {
+            if (currentLevel.value < 8) {
                 currentLevel.value++;
                 resetResponses();
                 if (currentLevel.value < 7) {
@@ -132,6 +132,8 @@ const app = Vue.createApp({
                 if (response.ok) {
                     books.value = data;
                     await fetchProgress();
+                    progress.value.completed_methods = [...new Set([...progress.value.completed_methods, 'GET'])];
+                    showSuccess('GET request successful! You can now proceed to the next level.');
                 }
             } catch (error) {
                 showError('Failed to fetch books. Make sure the server is running.');
@@ -156,6 +158,8 @@ const app = Vue.createApp({
                 if (response.ok) {
                     books.value = data;
                     await fetchProgress();
+                    progress.value.completed_methods = [...new Set([...progress.value.completed_methods, 'GET_ID'])];
+                    showSuccess('GET ID request successful! You can now proceed to the next level.');
                 }
             } catch (error) {
                 showError('Failed to fetch books. Make sure the server is running.');
@@ -194,6 +198,8 @@ const app = Vue.createApp({
                     refreshBooksTable();
                     newBook.value = { title: '', author: '', year: '' };
                     await fetchProgress();
+                    progress.value.completed_methods = [...new Set([...progress.value.completed_methods, 'POST'])];
+                    showSuccess('POST request successful! You can now proceed to the next level.');
                 }
             } catch (error) {
                 showError('Failed to create book. Make sure the server is running.');
@@ -234,6 +240,8 @@ const app = Vue.createApp({
                     refreshBooksTable();
                     updateBook.value = { id: '', title: '', author: '', year: '' };
                     await fetchProgress();
+                    progress.value.completed_methods = [...new Set([...progress.value.completed_methods, 'PUT'])];
+                    showSuccess('PUT request successful! You can now proceed to the next level.');
                 }
             } catch (error) {
                 showError('Failed to update book. Make sure the server is running.');
@@ -278,6 +286,8 @@ const app = Vue.createApp({
                     refreshBooksTable();
                     patchBook.value = { id: '', title: '', author: '', year: '' };
                     await fetchProgress();
+                    progress.value.completed_methods = [...new Set([...progress.value.completed_methods, 'PATCH'])];
+                    showSuccess('PATCH request successful! You can now proceed to the next level.');
                 }
             } catch (error) {
                 showError('Failed to patch book. Make sure the server is running.');
@@ -308,6 +318,8 @@ const app = Vue.createApp({
                     refreshBooksTable();
                     deleteBookId.value = '';
                     await fetchProgress();
+                    progress.value.completed_methods = [...new Set([...progress.value.completed_methods, 'DELETE'])];
+                    showSuccess('DELETE request successful! You can now proceed to the documentation.');
                 }
             } catch (error) {
                 showError('Failed to delete book. Make sure the server is running.');
@@ -392,6 +404,7 @@ const app = Vue.createApp({
             previousLevel,
             nextLevel,
             handleGetAllBooks,
+            handleGetBook,
             handleCreateBook,
             handleUpdateBook,
             handlePatchBook,

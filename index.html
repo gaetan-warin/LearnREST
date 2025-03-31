@@ -132,7 +132,7 @@
                     <div v-if="selectedMode === 'beginner'" class="interactive-demo">
                         <div class="method-card get">
                             <h3>GET a Specific Book</h3>
-                            <input type="number" v-model="getBookId" placeholder="Enter book ID">
+                            <input type="number" v-model="getBookId" placeholder="Book ID (required)">
                             <button @click="handleGetBook">GET /api/books/{id}</button>
                         </div>
                         <div class="response-box">

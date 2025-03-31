@@ -216,12 +216,14 @@ const app = Vue.createApp({
                 return;
             }
 
+            const updateData = {
+                title: updateBook.value.title
+            };
+
+            if (updateBook.value.author) updateData.author = updateBook.value.author;
+            if (updateBook.value.year) updateData.year = parseInt(updateBook.value.year);
+
             try {
-                const updateData = {
-                    title: updateBook.value.title,
-                    author: updateBook.value.author,
-                    year: updateBook.value.year ? parseInt(updateBook.value.year) : null
-                };
 
                 const response = await fetch(`${API_BASE_URL}/books/${updateBook.value.id}`, {
                     method: 'PUT',

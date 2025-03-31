@@ -446,7 +446,8 @@
                 <div class="controls" v-if="gameStarted">
                     <button class="nav-button" @click="previousLevel">Previous</button>
                     <button class="nav-button" v-if="currentLevel < 7" @click="nextLevel">Next</button>
-                    <a v-else class="nav-button" href="/docs" target="_blank">View API Documentation →</a>
+                    <button v-if="currentLevel === 7" class="nav-button" @click="gameStarted = false">Return
+                        Home</button>
                 </div>
             </footer>
         </div>

@@ -167,12 +167,9 @@ async def get_books(request: Request):
     """
     Get all books in the library
     """
-    try:
-        update_progress(request, 'GET')
-        return JSONResponse(content=[{"id": 1, "title": "Test Book", "author": "Test Author", "year": 2024, "available": True}])
-    except Exception as e:
-        print(f"Error in get_books: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+    update_progress(request, 'GET')
+    data = read_data()
+    return JSONResponse(content=data['books'])
 
 @app.get("/api/books/{book_id}")
 async def get_book(book_id: int, request: Request):
@@ -288,9 +285,12 @@ if __name__ == "__main__":
         if not os.path.exists(DATA_FILE):
             write_data({'books': []})
             print("Initial data file created")
+
         if not os.path.exists(PROGRESS_FILE):
             write_progress({})
             print("Initial progress file created")
+    except IOError as e:
+        print(f"Error creating initial files: {e}")
 
     import uvicorn
     print("API Documentation available at http://localhost:3001/docs")

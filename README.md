@@ -9,6 +9,8 @@ A gamified API for learning REST concepts.
 - Python 3.7+
 - pip
 
+The frontend is built with HTML, CSS, and JavaScript and does not require Node.js or Vue.js.
+
 ### Installation
 
 1. Clone the repository:
@@ -52,7 +54,9 @@ A gamified API for learning REST concepts.
    uvicorn server:app --reload --host 0.0.0.0 --port 3001
    ```
 
-3. Access the API documentation at `http://localhost:3001/docs`.
+3.Play the game at `http://localhost:3001`
+
+4.Access the API documentation at `http://localhost:3001/docs`.
 
 ## Project Structure
 

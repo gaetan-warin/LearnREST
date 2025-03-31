@@ -406,7 +406,7 @@
             </main>
 
             <!-- Current Library State -->
-            <div class="library-state" v-if="gameStarted && currentLevel < 7">
+            <div class="library-state" v-if="gameStarted && currentLevel < 7 && selectedMode !== 'advanced'">
                 <h3>Current Library State</h3>
                 <div class="books-table" v-if="books.length > 0">
                     <table>

@@ -68,6 +68,8 @@ class Progress(BaseModel):
 
 def read_data():
     try:
+        if not os.path.exists(DATA_FILE):
+            raise FileNotFoundError(f"Data file not found: {DATA_FILE}")
         if os.path.exists(DATA_FILE):
             with open(DATA_FILE, 'r') as f:
                 try:
@@ -176,11 +178,11 @@ async def get_book(book_id: int, request: Request):
     """
     Get a specific book by ID
     """
+
     data = read_data()
     book = next((b for b in data['books'] if b['id'] == book_id), None)
 
     if book:
-        update_progress(request, 'GET_ID')
         return book
     raise HTTPException(status_code=404, detail="Book not found")
 
